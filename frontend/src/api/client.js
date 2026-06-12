@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const api = axios.create({ baseURL: '/api' });
+const BASE = 'https://asset-manager-backend-nj3r.onrender.com';
+
+const api = axios.create({ baseURL: BASE + '/api' });
 
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
