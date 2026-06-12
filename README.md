@@ -1,107 +1,165 @@
 # CULT Asset Manager — IIT Roorkee
 
-A full-stack Asset Management and Resource Allocation Platform for the Cultural Council of IIT Roorkee.
+A web-based platform for the Cultural Council of IIT Roorkee to manage shared equipment like cameras, audio systems, lighting, costumes, and event infrastructure.
+
+Built as part of the CULT Open Projects 2026 challenge.
+
+Live at: https://asset-manager-iitr.vercel.app
+
+---
+
+## What it does
+
+The platform lets the council manage who borrows what equipment, for how long, and whether it's been returned. There are two types of users:
+
+**Admin** — can add/edit/delete assets, approve or reject booking requests, issue equipment, mark returns, and view analytics and audit logs.
+
+**User** — can browse available equipment, request to borrow something for specific dates, and track the status of their requests.
+
+---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + Vite + Tailwind CSS + Recharts |
-| Backend | Node.js + Express |
-| Database | PostgreSQL + Prisma ORM |
-| Auth | JWT (JSON Web Tokens) |
-| Charts | Recharts |
-| QR Codes | qrcode npm package |
-| Deployment | Docker + Docker Compose |
+- Frontend: React + Vite + Tailwind CSS
+- Backend: Node.js + Express
+- Database: PostgreSQL with Prisma ORM
+- Authentication: JWT (JSON Web Tokens)
+- Charts: Recharts
+- Deployment: Vercel (frontend), Render (backend), Neon (database)
 
-## Features
+---
 
-### Core (Mandatory)
-- ✅ JWT-based User Authentication (Register / Login)
-- ✅ Role-based access (Admin / User)
-- ✅ Full Inventory Management (CRUD for assets)
-- ✅ Asset Discovery with Search & Filter
-- ✅ Booking Request System (with quantity validation)
-- ✅ Approval Workflow (Approve / Reject with notes)
-- ✅ Asset Issue & Return Management
-- ✅ Analytics Dashboard (charts, summary cards)
-- ✅ Borrowing History (user + admin views)
+## Running locally
 
-### Bonus
-- ✅ QR Code generation per asset
-- ✅ Audit Logs (all admin & booking actions tracked)
-- ✅ Asset health/condition tracking
-- ✅ Dockerized deployment (Docker Compose)
-- ✅ Utilization rate analytics per asset
+You have two options — Docker (easier) or manual setup.
 
-## Setup — Local Development
+### Option 1 — Docker
 
-### Prerequisites
-- Node.js 18+
-- PostgreSQL 14+ (or Docker)
-
-### 1. Clone & install
+Make sure Docker Desktop is installed and running, then:
 
 ```bash
-git clone <your-repo>
-cd asset-management
-
-# Backend
-cd backend
-cp .env.example .env       # Edit DATABASE_URL, JWT_SECRET
-npm install
-npx prisma migrate dev --name init
-node src/prisma/seed.js    # Seeds demo data
-npm run dev
-
-# Frontend (new terminal)
-cd ../frontend
-npm install
-npm run dev
-```
-
-Frontend runs at `http://localhost:5173`  
-Backend runs at `http://localhost:5000`
-
-### Demo Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@cult.iitroorkee.ac.in | admin123 |
-| User | user@iitroorkee.ac.in | user123 |
-
-## Setup — Docker (Recommended)
-
-```bash
+git clone https://github.com/Ronak-F7/Asset-Manager-IITR.git
+cd Asset-Manager-IITR
 docker-compose up --build
 ```
 
-App available at `http://localhost:5173`
+Open http://localhost:5173 in your browser.
 
-## API Overview
+### Option 2 — Manual
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register new user |
-| POST | /api/auth/login | Login |
-| GET | /api/assets | List all assets (with search/filter) |
-| POST | /api/assets | Create asset (admin) |
-| PUT | /api/assets/:id | Update asset (admin) |
-| DELETE | /api/assets/:id | Delete asset (admin) |
-| GET | /api/bookings | List bookings |
-| POST | /api/bookings | Create booking request |
-| PATCH | /api/bookings/:id/approve | Approve booking (admin) |
-| PATCH | /api/bookings/:id/reject | Reject booking (admin) |
-| PATCH | /api/bookings/:id/issue | Issue asset (admin) |
-| PATCH | /api/bookings/:id/return | Return asset (admin) |
-| GET | /api/analytics/dashboard | Dashboard stats (admin) |
-| GET | /api/analytics/utilization | Asset utilization (admin) |
-| GET | /api/audit | Audit logs (admin) |
+You'll need Node.js and PostgreSQL installed.
 
-## Database Schema
+**Database setup:**
+```bash
+psql -U postgres
+CREATE DATABASE asset_management;
+\q
+```
 
-- **User** — id, name, email, password (hashed), role
-- **Asset** — id, name, category, description, totalQuantity, availableQuantity, status, condition, qrCode
-- **Booking** — id, userId, assetId, quantity, status, startDate, endDate, issuedAt, returnedAt, adminNote
-- **MaintenanceLog** — id, assetId, description, reportedBy
-- **AuditLog** — id, userId, assetId, action, details, createdAt
+**Backend:**
+```bash
+cd backend
+cp .env.example .env
+# Edit .env and fill in your DATABASE_URL and JWT_SECRET
+npm install
+npx prisma migrate dev --name init
+node src/prisma/seed.js
+npm run dev
+```
+
+**Frontend (open a new terminal):**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173 in your browser.
+
+---
+
+## Environment Variables
+
+Create a `.env` file inside the `backend` folder:
+
+```
+DATABASE_URL="postgresql://your_user:your_password@localhost:5432/asset_management"
+JWT_SECRET="any-secret-string-you-choose"
+PORT=5000
+FRONTEND_URL="http://localhost:5173"
+```
+
+---
+
+## Default login after setup
+
+After running the seed file, one admin account is created:
+
+- Email: ronak@cult.com
+- Password: ronak123
+
+New users can register themselves from the login page. Registered users get the User role by default.
+
+---
+
+## How to use the app
+
+**As a user:**
+1. Register a new account from the login page
+2. Browse the Assets page to see available equipment
+3. Click on any asset to see details and request it
+4. Fill in the quantity, dates, and purpose, then submit
+5. Go to My Bookings to track your request status
+6. Once approved and issued, you'll see the status update in real time
+
+**As an admin:**
+1. Log in with the admin credentials
+2. Go to Assets to add, edit, or remove equipment
+3. Go to All Bookings to see pending requests — approve or reject with an optional note
+4. After approving, click Issue when you physically hand over the equipment
+5. Click Return when the equipment comes back
+6. Check the Dashboard for an overview of activity and charts
+7. Check Analytics to see which assets are used most
+8. Check Audit Logs to see a full history of every action taken
+
+---
+
+## Features
+
+**Core:**
+- Secure login and registration with role-based access
+- Full inventory management with categories and status tracking
+- Asset booking with date range and quantity validation
+- Approval workflow with admin notes
+- Issue and return tracking with timestamps
+- Analytics dashboard with charts
+- Borrowing history for users and system-wide view for admins
+
+**Bonus:**
+- QR code generation for every asset
+- Audit logging for all actions
+- Asset condition tracking
+- Dockerized deployment with Docker Compose
+- Utilization rate analytics per asset
+
+---
+
+## Project Structure
+
+```
+Asset-Manager-IITR/
+├── backend/          # Express API + Prisma + PostgreSQL
+│   ├── src/
+│   │   ├── routes/   # Auth, assets, bookings, analytics, audit
+│   │   ├── middleware/
+│   │   └── prisma/   # Schema and seed file
+│   └── package.json
+├── frontend/         # React + Vite + Tailwind
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── context/
+│   │   └── api/
+│   └── package.json
+└── docker-compose.yml
+```
