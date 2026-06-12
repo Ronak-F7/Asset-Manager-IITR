@@ -1,0 +1,105 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum AssetStatus {
+  AVAILABLE
+  PARTIALLY_AVAILABLE
+  UNAVAILABLE
+  MAINTENANCE
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ISSUED
+  RETURNED
+  OVERDUE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings   Booking[]
+  auditLogs  AuditLog[]
+}
+
+model Asset {
+  id               String      @id @default(cuid())
+  name             String
+  category         String
+  description      String?
+  totalQuantity    Int
+  availableQuantity Int
+  status           AssetStatus @default(AVAILABLE)
+  condition        String?     @default("Good")
+  qrCode           String?
+  imageUrl         String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  bookings         Booking[]
+  maintenanceLogs  MaintenanceLog[]
+  auditLogs        AuditLog[]
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  userId      String
+  assetId     String
+  quantity    Int
+  purpose     String?
+  status      BookingStatus @default(PENDING)
+  startDate   DateTime
+  endDate     DateTime
+  issuedAt    DateTime?
+  returnedAt  DateTime?
+  adminNote   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user        User   @relation(fields: [userId], references: [id])
+  asset       Asset  @relation(fields: [assetId], references: [id])
+}
+
+model MaintenanceLog {
+  id          String   @id @default(cuid())
+  assetId     String
+  description String
+  reportedBy  String
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  asset       Asset @relation(fields: [assetId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  assetId   String?
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+
+  user      User?  @relation(fields: [userId], references: [id])
+  asset     Asset? @relation(fields: [assetId], references: [id])
+}
