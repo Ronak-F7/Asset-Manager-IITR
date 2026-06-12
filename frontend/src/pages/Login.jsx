@@ -39,6 +39,9 @@ export default function Login() {
 
       <div className="relative w-full max-w-md">
         {/* Header */}
+        <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs rounded-xl px-4 py-3 mb-6 text-center">
+          ⚠️ First visit? Wait <strong>~60 seconds</strong> for the server to wake up.
+        </div>
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-violet-600 rounded-2xl mb-4 shadow-lg shadow-violet-500/30">
             <Camera className="text-white" size={28} />

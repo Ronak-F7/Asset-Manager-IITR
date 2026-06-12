@@ -75,22 +75,36 @@ export default function Layout() {
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
           <aside className="relative flex flex-col w-64 h-full bg-gray-900 p-4 z-50 border-r border-gray-800">
-            <div className="flex items-center justify-between mb-8 px-2">
+            <div className="flex items-center justify-between mb-6 px-2">
               <p className="font-bold text-white">CULT Asset Manager</p>
               <button onClick={() => setOpen(false)} className="text-gray-400"><X size={20} /></button>
             </div>
             {nav}
+            <div className="border-t border-gray-800 pt-4 mt-4">
+              <div className="px-2 mb-3">
+                <p className="text-sm font-medium text-white">{user?.name}</p>
+                <p className="text-xs text-gray-500">{user?.role}</p>
+              </div>
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 w-full transition-colors">
+                <LogOut size={18} /> Logout
+              </button>
+            </div>
           </aside>
         </div>
       )}
 
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <header className="md:hidden flex items-center gap-3 p-4 bg-gray-900 border-b border-gray-800">
-          <button onClick={() => setOpen(true)} className="text-gray-400"><Menu size={22} /></button>
-          <p className="font-bold text-white">CULT Asset Manager</p>
+        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-gray-900 border-b border-gray-800">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setOpen(true)} className="text-gray-400"><Menu size={22} /></button>
+            <p className="font-bold text-white text-sm">CULT Asset Manager</p>
+          </div>
+          <button onClick={handleLogout} className="text-red-400 hover:text-red-300 transition-colors">
+            <LogOut size={20} />
+          </button>
         </header>
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-950">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-950">
           <Outlet />
         </main>
       </div>
