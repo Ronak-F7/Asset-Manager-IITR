@@ -112,7 +112,7 @@ export default function Login() {
                 <input
                   type="email" required
                   value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  placeholder={role === 'admin' ? 'ronakdas@iitr.ac.in' : 'your@email.com'}
+                  placeholder={role === 'admin' ? 'ronak@cult.com' : 'your@email.com'}
                   className="w-full bg-gray-800 border border-gray-700 focus:border-violet-500 text-white placeholder-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all"
                 />
               </div>
