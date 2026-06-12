@@ -32,12 +32,5 @@ services:
     command: >
       sh -c "npx prisma migrate dev --name init --skip-seed && npx prisma db seed && node src/index.js"
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-
 volumes:
   pgdata:

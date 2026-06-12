@@ -4,21 +4,17 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create admin
-  const adminPass = await bcrypt.hash('admin123', 10);
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@cult.iitroorkee.ac.in' },
-    update: {},
-    create: { name: 'Admin', email: 'admin@cult.iitroorkee.ac.in', password: adminPass, role: 'ADMIN' },
+  // Create admin with new credentials
+  const adminPass = await bcrypt.hash('ronak123', 10);
+  await prisma.user.upsert({
+    where: { email: 'ronakdas@iitr.ac.in' },
+    update: { password: adminPass },
+    create: { name: 'Ronak Das', email: 'ronakdas@iitr.ac.in', password: adminPass, role: 'ADMIN' },
   });
 
-  // Create test user
-  const userPass = await bcrypt.hash('user123', 10);
-  await prisma.user.upsert({
-    where: { email: 'user@iitroorkee.ac.in' },
-    update: {},
-    create: { name: 'Test User', email: 'user@iitroorkee.ac.in', password: userPass, role: 'USER' },
-  });
+  // Remove old admin if exists
+  await prisma.user.deleteMany({ where: { email: 'admin@cult.iitroorkee.ac.in' } }).catch(() => {});
+  await prisma.user.deleteMany({ where: { email: 'user@iitroorkee.ac.in' } }).catch(() => {});
 
   // Create assets
   const assets = [
@@ -47,8 +43,7 @@ async function main() {
   }
 
   console.log('✅ Database seeded successfully');
-  console.log('Admin: admin@cult.iitroorkee.ac.in / admin123');
-  console.log('User:  user@iitroorkee.ac.in / user123');
+  console.log('Admin: ronakdas@iitr.ac.in / ronak123');
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
